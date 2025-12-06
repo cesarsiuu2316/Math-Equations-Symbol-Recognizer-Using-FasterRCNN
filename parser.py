@@ -3,7 +3,7 @@ import glob
 import json
 from utils import load_config
 
-def parse_lg_file(file_path):
+def parse_lg_file(file_path) -> list:
     """
     Parses a single .lg file to extract labels and bounding boxes.
     
@@ -59,13 +59,12 @@ def parse_lg_file(file_path):
             
     return results
 
-def process_dataset(lg_dir, img_dir, mapping_path="class_mapping.json", annotations_path="train_annotations.json"):
+def process_dataset(lg_dir, mapping_path, annotations_path):
     """
     Scans all .lg files, generates class mapping, and saves all annotations to a single JSON.
     
     Args:
         lg_dir (str): Directory containing .lg files.
-        img_dir (str): Directory containing image files (used for verification/path construction).
         mapping_path (str): Path to save the class_mapping.json.
         annotations_path (str): Path to save the train_annotations.json.
     """
@@ -76,7 +75,7 @@ def process_dataset(lg_dir, img_dir, mapping_path="class_mapping.json", annotati
     print(f"Scanning {len(lg_files)} files in {lg_dir}...")
     
     for i, file_path in enumerate(lg_files):
-        if i % 1000 == 0:
+        if i % len(lg_files) == 0:
             print(f"Processed {i}/{len(lg_files)} files...")
             
         # Parse the LG file
@@ -94,7 +93,7 @@ def process_dataset(lg_dir, img_dir, mapping_path="class_mapping.json", annotati
             boxes.append(item['bbox'])
             labels.append(item['label'])
             
-        if boxes: # Only add if there are annotations
+        if boxes:
             all_annotations.append({
                 "file_id": base_name,
                 "image_name": image_filename,
@@ -106,7 +105,6 @@ def process_dataset(lg_dir, img_dir, mapping_path="class_mapping.json", annotati
     sorted_labels = sorted(list(unique_labels))
     class_mapping = {label: idx + 1 for idx, label in enumerate(sorted_labels)}
 
-    
     with open(mapping_path, 'w') as f:
         json.dump(class_mapping, f, indent=4)
     print(f"Saved class mapping with {len(class_mapping)} classes to {mapping_path}")
@@ -123,8 +121,17 @@ def process_dataset(lg_dir, img_dir, mapping_path="class_mapping.json", annotati
     
     return class_mapping, all_annotations
 
-if __name__ == "__main__":
+
+def main(): 
     config = load_config()
     lg_dir = config['paths']['train_lg_dir']
-    img_dir = config['paths']['train_img_dir']
-    process_dataset(lg_dir, img_dir)
+    mapping_path = config['paths']['class_mapping_path']
+    annotations_path = config['paths']['train_annotations_path']
+    data_dir = config['paths']['data_dir']
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    process_dataset(lg_dir, mapping_path, annotations_path)
+
+
+if __name__ == "__main__":
+    main()

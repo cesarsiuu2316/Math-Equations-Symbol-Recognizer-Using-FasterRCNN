@@ -3,6 +3,9 @@
         "crohme_dir": "TC11_CROHME23",
         "train_img_dir": "TC11_CROHME23/IMG/train/OffHME",
         "train_lg_dir": "TC11_CROHME23/SymLG/train/OffHME",
+        "data_dir": "data",
+        "class_mapping_path": "data/class_mapping.json",
+        "train_annotations_path": "data/train_annotations.json",
         "whiteboard_dir": "whiteboard_data",
         "output_dir": "output"
     },
