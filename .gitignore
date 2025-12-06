@@ -1,2 +1,16 @@
 .venv/
+
+# Dataset folders and files
 TC11_CROHME23/
+
+# Json files of annotations and mappings
+train_annotations.json
+class_mapping.json  
+
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# helpful markdowns 
+spec.md
