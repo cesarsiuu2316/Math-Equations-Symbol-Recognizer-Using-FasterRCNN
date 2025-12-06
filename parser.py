@@ -58,6 +58,7 @@ def parse_lg_file(file_path) -> list:
                     ]
 
                     # Validation: Only store valid boxes
+                    #!!! NOTE: Not the best way to do it, but works for now
                     if bbox[2] > bbox[0] and bbox[3] > bbox[1]:
                         bbox_map[obj_id] = bbox
                     else: 
