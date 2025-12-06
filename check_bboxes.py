@@ -35,10 +35,16 @@ def parse_lg_file(file_path):
                 label_id = parts[1].strip()
                 try:
                     # Convert to float first, then int for pixel coordinates
-                    x1 = int(float(parts[2]))
-                    y1 = int(float(parts[3]))
-                    x2 = int(float(parts[4]))
-                    y2 = int(float(parts[5]))
+                    raw_x1 = int(float(parts[2]))
+                    raw_y1 = int(float(parts[3]))
+                    raw_x2 = int(float(parts[4]))
+                    raw_y2 = int(float(parts[5]))
+                    
+                    # Sort (Standardize direction, currently the LG files have inconsistent order)
+                    x1 = min(raw_x1, raw_x2)
+                    y1 = min(raw_y1, raw_y2)
+                    x2 = max(raw_x1, raw_x2)
+                    y2 = max(raw_y1, raw_y2)
                     
                     bboxes.append({
                         'label': label_id,
@@ -117,5 +123,5 @@ def visualize_sample(lg_filename=None):
     plt.show()
 
 if __name__ == "__main__":
-    for i in range(10): 
+    for i in range(2): 
         visualize_sample()
