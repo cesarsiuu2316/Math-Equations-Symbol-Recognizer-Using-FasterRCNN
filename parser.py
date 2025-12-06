@@ -56,7 +56,12 @@ def parse_lg_file(file_path) -> list:
                         max(raw_x1, raw_x2),
                         max(raw_y1, raw_y2)
                     ]
-                    bbox_map[obj_id] = bbox
+
+                    # Validation: Only store valid boxes
+                    if bbox[2] > bbox[0] and bbox[3] > bbox[1]:
+                        bbox_map[obj_id] = bbox
+                    else: 
+                        print(f"Warning: Invalid bbox {bbox} in file {file_path}")
 
                 except ValueError:
                     pass
@@ -86,12 +91,13 @@ def process_dataset(lg_dir, mapping_path, annotations_path):
     lg_files = glob.glob(os.path.join(lg_dir, "*.lg"))
     unique_labels = set()
     all_annotations = []
-    
-    print(f"Scanning {len(lg_files)} files in {lg_dir}...")
+    num_files = len(lg_files)
+
+    print(f"Scanning {num_files} files in {lg_dir}...")
     
     for i, file_path in enumerate(lg_files):
-        if i % len(lg_files) == 0:
-            print(f"Processed {i}/{len(lg_files)} files...")
+        if i % 1000 == 0:
+            print(f"Processed {i}/{num_files} files...")
             
         # Parse the LG file
         results = parse_lg_file(file_path)
