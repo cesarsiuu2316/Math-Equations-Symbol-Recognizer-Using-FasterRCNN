@@ -44,8 +44,20 @@ def parse_lg_file(file_path) -> list:
                 obj_id = parts[1]
                 try:
                     # x1, y1, x2, y2
-                    bbox = [float(parts[2]), float(parts[3]), float(parts[4]), float(parts[5])]
+                    raw_x1 = float(parts[2])
+                    raw_y1 = float(parts[3])
+                    raw_x2 = float(parts[4])
+                    raw_y2 = float(parts[5])
+                    
+                    # Sort (Standardize direction, currently the LG files have inconsistent order)
+                    bbox = [
+                        min(raw_x1, raw_x2),
+                        min(raw_y1, raw_y2),
+                        max(raw_x1, raw_x2),
+                        max(raw_y1, raw_y2)
+                    ]
                     bbox_map[obj_id] = bbox
+
                 except ValueError:
                     pass
                     
@@ -67,6 +79,9 @@ def process_dataset(lg_dir, mapping_path, annotations_path):
         lg_dir (str): Directory containing .lg files.
         mapping_path (str): Path to save the class_mapping.json.
         annotations_path (str): Path to save the train_annotations.json.
+
+    Returns: 
+        tuple: (class_mapping dict, all_annotations list)
     """
     lg_files = glob.glob(os.path.join(lg_dir, "*.lg"))
     unique_labels = set()

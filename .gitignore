@@ -2,11 +2,12 @@
 
 # Dataset folders and files
 TC11_CROHME23/
+whiteboard_data/
+data/
 
 # Json files of annotations and mappings
 train_annotations.json
 class_mapping.json  
-
 
 # Python cache files
 __pycache__/
